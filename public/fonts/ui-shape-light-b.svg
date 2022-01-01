@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content>
+  <meta name="keywords" content>
+  <meta name="author" content>
+  <title>508 Resource Limit Reached</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="shortcut icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" sizes="152x152" href="../images/namecheap-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../images/namecheap-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../images/namecheap-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../images/namecheap-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../images/namecheap-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../images/namecheap-icon-72x72.png">
+  <link rel="apple-touch-icon-precomposed" href="../images/namecheap-icon-57x57.png">
+</head>
+
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="logo">
+        <div>hosted by</div>
+        <a href="https://www.namecheap.com/"><img src="../images/namecheap-hd.png" alt="Namecheap"></a>
+      </div>
+    </header>
+    <div class="grid-row flex four-fifths">
+      <div class="aside">
+        <picture>
+          <img src="../images/error-508.png" alt="Resource Limit Reached">
+        </picture>
+      </div>
+      <div class="main">
+        <div class="headline">
+          <h1>Resource Limit Reached</h1>
+          <h2 class="reset-mt">Error 508</h2>
+        </div>
+        <p>This website has exceeded its resource limit and is temporarily unable to service your request. Please try again later.</p>
+        <p>If you are the owner of the website and are regularly seeing this error, you may <a href="https://www.namecheap.com/support/knowledgebase/article.aspx/9366/2194/errors-500-502-504-and-508-reasons-and-ways-of-fixing" target="_blank">read more about it in our Knowledgebase</a>.</p>
+      </div>
+    </div>
+  </div>
+</body>
+

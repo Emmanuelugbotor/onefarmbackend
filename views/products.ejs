@@ -1,0 +1,349 @@
+<%- include ('partials/mainAdminHeader.ejs') -%>	
+      
+      <!-- Dark table -->
+      <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+              <button class="dropdown-item bg-primary text-white" data-toggle="modal" data-target="#register-popup"  style="text-align: center; font-weight: bold; margin-bottom: 5px;">Post Product</button>
+
+              <% if ( success ) { %>
+              <h3 class="text-white mb-0" id="www"> <%= success %> </h3>
+               <% } %>
+               <div>
+                <% if ( deletess ) { %>
+              <h3 class="text-white mb-0" id="www"> <%= deletess %> </h3>
+               <% } %>
+               <% if ( deletedUser ) { %>
+              <h3 class="text-white mb-0" id="www"> <%= deletedUser %> </h3>
+               <% } %>
+               </div>
+                
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center table-dark table-flush">
+                <thead class="thead-dark" >
+                  <tr >
+                    <th scope="col" class="sort"></th>
+                    <th scope="col" class="sort" data-sort="name">N/s</th>
+                    <th scope="col" class="sort" data-sort="budget">Farmer Name</th>
+                    <th scope="col" class="sort" data-sort="status">Category</th>
+                    <!-- <th scope="col">Users</th> -->
+                    <th scope="col" class="sort" data-sort="completion">number</th>
+                    <th scope="col" class="sort" data-sort="completion">View</th>
+                    
+                  </tr>
+                </thead>
+                <tbody class="list" style="color: white; font-weight: bold;">
+                   <% if(locals.results && forms) {%>
+                      <% Object.values(results).forEach(function(product) {%>
+                  <tr>
+                     <td class="text-right">
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false" style="background-color: black;color: white;">
+                          <i class="fas fa-ellipsis-v" style="color: white;"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" >
+                          <button class="dropdown-item" data-toggle="modal" data-target="#edit<%= product.pid %>"  style="background-color: rgb(136, 235, 97); color: white; font-weight: bold; margin-bottom: 5px;">Edit product </button>
+                          <a class="dropdown-item" href="/adminDeleteProduct/product/<%= product.pid %>/<%= product.farmer_id %>" style="background-color: rgb(211, 79, 79); 
+                          color: white; font-weight: bold; margin-bottom: 5px;">Delete Product</a>
+                        
+                        </div>
+                      </div>
+                    </td>
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm"><%= product.pid %></span>
+                        </div>
+                      </div>
+                    </th>
+                    <td class="budget"> <%= product.name %>  </td>
+                    <td>
+                      <%= product.category %>
+                    </td>
+                   
+                    <td>
+                        <%= product.phone %>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-neutral" data-toggle="modal" data-target="#view<%= product.pid %>"> View Product </button>
+                    </td>
+                   
+                  </tr>
+
+                  <div class="modal fade"  id="edit<%= product.pid %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel"> Edit Product Price </h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            
+                           <form  action="/editPrice/<%= product.pid %>" method="POST"> 
+                              <div class="form-group">
+                                <label for="">Full Bag Price </label>
+                                <input type="number" class="form-control" name="fullbag" placeholder="Enter Re-selling price per Kg" required>
+                                
+                              </div>
+                             
+                              <div class="form-group">
+                                <label for="">Half Bag Price </label>
+                                <input type="number" class="form-control" name="halfbag" placeholder="Enter Re-selling price per Kg" required>
+                                
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="">Quater Bag Price </label>
+                                <input type="number" class="form-control" name="quarterbag" placeholder="Enter Re-selling price per Kg" required>
+                                
+                              </div>
+                              
+                          
+                              <div class="form-group">
+
+                                <label for="">Product Description </label>
+                                <input type="text" class="form-control" name="desc" placeholder="Enter Product Description" required>
+                                
+                              </div>
+
+                                 <!-- <div class="form-group">
+                                <label for="">Min Individual Quantity </label>
+                                <input type="number" class="form-control" name="ind" placeholder="Minimum number of Quantity in Kg Individual can buy" required>
+                                
+                              </div>
+                              <div class="form-group">
+                                <label for="">Min Business Quantity </label>
+                                <input type="number" class="form-control" name="bus" placeholder="Minimum number of Quantity in Kg Business can buy" required>
+                                
+                              </div> -->
+                                        
+                              <button type="submit" class="btn btn-primary"> Post </button>
+                          </form>
+                          
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <div class="modal fade" id="view<%= product.pid %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Product Details</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+
+                          <div class="card mb-3" >
+                            <div class="row g-0">
+                              <div class="col-md-4">
+                                <img src="../../<%= product.imagesName %>" style=" max-width: 280px; height: 300px;" alt="<%= product.category %>">
+                              </div>
+                              <div class="col-md-8">
+                                <div class="card-body" style="margin-left: 5px;">
+                                  <h4 class="card-title" style="color: black; font-weight: bold;"> Description </h4>
+                                  <p class="card-text" style="color: black;  text-align: justify;"> <%= product.desc %> .</p>
+                                  <p  class="card-text"><b style="color: black; font-weight: bold;">  Category: </b><%= product.category %> </p>
+                                  <p  class="card-text"><b style="color: black; font-weight: bold;">  Amount FullBag : </b>#<%= product.fullbag %>  </p>
+                                  <p  class="card-text"><b style="color: black; font-weight: bold;">  Amount HalfBag : </b> #<%= product.halfbag %></p>
+                                  <p  class="card-text"><b style="color: black; font-weight: bold;">  Amount QuaterBag : </b> #<%= product.quaterbag %></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                   <%})%>
+                <%}else{%>
+                     <p style="color: black; font-weight: bold;">No register customers yet</p>
+                <%}%>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <div class="modal fade" id="register-popup">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content"><a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
+                class="ti ti-close"></em></a>
+            <div class="ath-container m-0">
+              <div class="ath-body">
+  
+                <form method="POST" action="/product" method="POST" style="text-align: center;" enctype="multipart/form-data" >
+                  
+  
+                  <fieldset style="text-align: center;">
+                    <legend>Post Product </legend>
+                    <small>Post the product you want to sell </small>
+                    <%if(error){%>
+                      <h6 style="color: rgb(224, 94, 94);" id="error"><%=error%></h6>
+                    <%}%>
+                    <%if(success){%>
+                      <h6 style="color: rgb(152, 224, 94);" id="successReg"><%=success%></h6>
+                    <%}%>
+  
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <select required name="category" style=" width: 100%; margin-bottom: 20px; 
+                        border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="text" name="fullName" value required class="input-bordered" placeholder="Category">
+
+                        <option>Select the product's category </option>
+                        <optgroup label="OUR PRODUCTS">
+                            <option>TOMATOES</option>
+                            <option>PEPPER</option>
+                            <option>CABBAGE</option>
+                            <option>CARROT</option>
+                            <option>TATASHE</option>
+                            <option>ONIONS</option>
+                            <option>GREEN BELL PEPPER</option>
+                            <option>LETTUCE</option>
+                            <option>IRISH POTATATOES</option>
+                            <option>CAULIFLOWER</option>
+                            <option>BROCCOLI</option>
+                            <option>BEETROOTS</option>
+                            <option>GREEN BEANS</option>
+                            <option>AVOCADO PEAR</option>
+                            <option>RED CHILLI</option>
+                            <option>PARSLEY</option>
+                            <option>KALE</option>
+                            <option>CELERY</option>
+                            <option>CHINESE CABBAGE</option>
+                            <option>EGGPLANT</option>
+                            <option>ICEBERG LETTUCE</option>
+                            <option>CHERRY TOMATOES</option>
+                            <option>MINT LEAF</option>
+                            <option>PURPLE CABBAGE</option>
+                            <option>LEAF</option>
+                        </optgroup>
+                        
+                    </select>
+
+                      </div>
+                    </div>
+
+
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <input style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="number" name="weight" value required class="input-bordered" placeholder="Total weight of the products in KG" />
+                      </div>
+                    </div>
+
+
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <input style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="number" name="amt" value required class="input-bordered" placeholder="Amount you want to sell the products in Naira">
+                      </div>
+                    </div>
+
+
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <textarea maxlength="500" style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="text" name="desc" value class="input-bordered" placeholder="Describe the product if neccessary"></textarea>
+
+                      </div>
+                    </div>
+                    
+                    
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <input  style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="number" name="fullbag" value class="input-bordered" placeholder="Price for full bag">
+
+                      </div>
+                    </div>
+                    
+                    
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <input  style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="number" name="halfbag" value class="input-bordered" placeholder="Price for half bag" />
+
+                      </div>
+                    </div>
+                    
+                    
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <input  style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="number" name="quaterbag" value class="input-bordered" placeholder="Price for quarter bag">
+
+                      </div>
+                    </div>
+
+
+
+
+
+
+                    <div class="field-item" style="margin: 10px">
+                      <div class="field-wrap">
+                        <input style=" width: 100%; margin-bottom: 20px; border-top-left-radius: 0.35rem;   border-top-right-radius: 0.35rem;   border-bottom-right-radius: 0.35rem;
+                        border-bottom-left-radius: 0.35rem;    border: 1px solid transparent; border-bottom-color: #1cc88a;
+                        " type="file" name="img" value required class="input-bordered" >
+                      </div>
+                    </div>
+
+                 
+                    <button class="btn btn-success btn-block btn-md" style="width: 100%;">Post</button>
+                    <button class="btn btn-danger btn-block btn-md" style="width: 100%;" type="button"  data-dismiss="modal">Cancle</button>
+                  </fieldset>
+  
+                  
+  
+                </form>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include ('partials/adminFooter.ejs') -%>

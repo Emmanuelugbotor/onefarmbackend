@@ -1,0 +1,102 @@
+<%- include ('partials/mainAdminHeader.ejs') -%>	
+
+      <!-- Dark table -->
+      <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+              <% if ( success ) { %>
+              <h3 class="text-white mb-0" id="www"> <%= success %> </h3>
+               <% } %>
+               <div>
+                <% if ( deletess ) { %>
+              <h3 class="text-white mb-0" id="www"> <%= deletess %> </h3>
+               <% } %>
+               <% if ( deletedUser ) { %>
+              <h3 class="text-white mb-0" id="www"> <%= deletedUser %> </h3>
+               <% } %>
+               </div>
+                
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center table-dark table-flush">
+                <thead class="thead-dark" >
+                  <tr >
+                    <th scope="col" class="sort"></th>
+                    <th scope="col" class="sort" data-sort="name">N/s</th>
+                    <th scope="col" class="sort" data-sort="budget">Full-Name</th>
+                    <th scope="col" class="sort" data-sort="status">Email</th>
+                    <!-- <th scope="col">Users</th> -->
+                    <th scope="col" class="sort" data-sort="completion">Title of Loan</th>
+                    <th scope="col" class="sort" data-sort="completion">Status</th>
+                    
+                  </tr>
+                </thead>
+                <tbody class="list" style="color: white; font-weight: bold;">
+                   <% if(locals.results && forms) {%>
+                      <% Object.values(results).forEach(function(product) {%>
+                  <tr>
+                     <td class="text-right">
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false" style="background-color: black;color: white;">
+                          <i class="fas fa-ellipsis-v" style="color: white;"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" >
+                          <a class="dropdown-item" href="/adminDeleteForm/<%= forms %>/<%= product.fID %>/<%= product.user_id %>" style="background-color: red; color: white; font-weight: bold; margin-bottom: 5px;">Delete Form</a>
+                        
+                        </div>
+                      </div>
+                    </td>
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <!-- <a href="#" class="avatar rounded-circle mr-3">
+                          <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
+                        </a> -->
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm"><%= product.fID %></span>
+                        </div>
+                      </div>
+                    </th>
+                    <td class="budget">
+                     <%= product.first_name %> <%= product.last_name %>
+                    </td>
+                    <td>
+                      <%= product.email %>
+                    </td>
+                   
+                    <td>
+                        <%= product.title %>
+                    </td>
+                    <td>
+                        Ready For Pickup / Delete
+                    </td>
+                   
+                  </tr>
+                   <%})%>
+                <%}else{%>
+                     <p>No register customers yet</p>
+                <%}%>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <%- include ('partials/adminFooter.ejs') -%>

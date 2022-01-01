@@ -1,0 +1,94 @@
+
+ <%- include ('partials/mainAdminHeader.ejs') -%>	
+ <!-- Dark table -->
+ <div class="row">
+   <div class="col">
+     <div class="card bg-default shadow">
+       <div class="card-header bg-transparent border-0">
+         <% if ( success ) { %>
+         <h3 class="text-white mb-0" id="www"> <%= success %> </h3>
+          <% } %>
+          <div>
+           <% if ( deletess ) { %>
+         <h3 class="text-white mb-0" id="www"> <%= deletess %> </h3>
+          <% } %>
+          <% if ( deletedUser ) { %>
+         <h3 class="text-white mb-0" id="www"> <%= deletedUser %> </h3>
+          <% } %>
+          </div>
+           
+       </div>
+       
+     </div>
+   </div>
+ </div>
+
+   <div class="row">
+   <div class="col">
+     <div class="card bg-default shadow">
+       <div class="card-header bg-transparent border-0">
+       </div>
+       <div class="table-responsive">
+         <table class="table align-items-center table-dark table-flush">
+           <thead class="thead-dark" >
+             <tr >
+
+               <th scope="col" class="sort" data-sort="name">N/s</th>
+               <th scope="col" class="sort" data-sort="budget">Customers Full Name</th>
+               <th scope="col" class="sort" data-sort="status">Email</th>
+               <th scope="col" class="sort" data-sort="status">Amount Deposited</th>
+               <th scope="col" class="sort" data-sort="completion">Date Deposited</th>
+               
+             </tr>
+           </thead>
+           <tbody class="list" style="color: white; font-weight: bold;">
+              <% if(locals.usersData) {%>
+                 <% Object.values(usersData).forEach(function(product) {%>
+             <tr>
+                
+               <th scope="row">
+                 <div class="media align-items-center">
+                   <div class="media-body">
+                     <span class="name mb-0 text-sm"><%= product.id %></span>
+                   </div>
+                 </div>
+               </th>
+               <td class="">
+                <%= product.first_name %>   <%= product.last_name %>
+               
+               </td>
+               <td>
+                 <%= product.email %>
+               </td>
+              
+               <td>
+                 <%= product.amount %>
+               </td>
+               <td>
+                 <script>                
+                  var today = new Date(`<%= product.deposit_date %>`);
+                     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+ today.getDate()
+                    document.write(date)
+                 </script>
+               </td>
+              
+             </tr>
+              <%})%>
+           <%}else{%>
+                <p>No register customers yet</p>
+           <%}%>
+
+           </tbody>
+         </table>
+       </div>
+     </div>
+   </div>
+ </div>
+
+
+
+<%- include ('partials/adminFooter.ejs') -%>
+
+
+
+
