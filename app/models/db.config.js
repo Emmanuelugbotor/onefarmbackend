@@ -1,19 +1,19 @@
 const sql = require("mysql");
 
 
-const connection = sql.createPool({
-  host: "us-cdbr-east-02.cleardb.com",
-  user: "bb8ef33c9ae33e",
-  password: "c568b81f",
-  database: "heroku_b311741948eae95",
-});
-
 // const connection = sql.createPool({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "alldb",
+//   host: "us-cdbr-east-02.cleardb.com",
+//   user: "bb8ef33c9ae33e",
+//   password: "c568b81f",
+//   database: "heroku_b311741948eae95",
 // });
+
+const connection = sql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "alldb",
+});
 
 
 
@@ -52,7 +52,7 @@ connection.query(
 );
 
 connection.query(
-  "CREATE TABLE IF NOT EXISTS `product`(`id` int(11) NOT NULL AUTO_INCREMENT, `farmer_id` int(11) NOT NULL, `category` text(1000) NULL,  `desc` text(1000) NULL, `weight` text(1000) NOT NULL, `amt` text(1000) NOT NULL, `fullbag` text(1000) NOT NULL, `halfbag` text(1000) NOT NULL, `quaterbag` text(1000) NOT NULL, `imagesName` text(1000) NOT NULL, `verify` text(1000)  NULL,  PRIMARY KEY(`id`), FOREIGN KEY(farmer_id) REFERENCES farmers(id) ON DELETE CASCADE ON UPDATE CASCADE)", (err, res)=>{
+  "CREATE TABLE IF NOT EXISTS `product`(`id` int(11) NOT NULL AUTO_INCREMENT, `farmer_id` int(11) NOT NULL, `category` text(1000) NULL,  `desc` text(1000) NULL, `weight` text(1000) NOT NULL, `amt` text(1000) NOT NULL, `fullbag` text(1000) NOT NULL, `halfbag` text(1000) NULL DEFAULT(0), `quaterbag` text(1000) NULL DEFAULT(0), `imagesName` text(1000) NOT NULL, `verify` text(1000)  NULL DEFAULT(false),  PRIMARY KEY(`id`), FOREIGN KEY(farmer_id) REFERENCES farmers(id) ON DELETE CASCADE ON UPDATE CASCADE)", (err, res)=>{
     if(err) console.log(err)
     else{
       connection.query(

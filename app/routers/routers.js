@@ -8,9 +8,10 @@ const { isAuth } =  require("../utils/token");
 
 const Routers = (app) => {
   return (routers = (paths, filename) => {
+
     //FARMERS API ENDPOINTS
-    app.post("/register", usersRoutes.RegisterUser);
-    app.post("/login", usersRoutes.LoginUser);
+    app.post("/farmer_register", usersRoutes.RegisterUser);
+    app.post("/farmer_login", usersRoutes.LoginUser);
 
 
     app.get("/getProducts", usersRoutes.ReadProduct);
@@ -33,6 +34,7 @@ const userAuthRouters = (app) => (routers = (paths, filename) => usersAuthRoutes
 const adminAuthRouter = (app) => (routers = (paths, filename) => adminAuthRoutes(app)(paths, adminMiddleWare, adminRoutes[filename]))
 
 module.exports = (app) => {
+
   Routers(app)("/adminlogin", "mainAdminLogin");
 
 

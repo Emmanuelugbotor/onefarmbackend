@@ -15,13 +15,24 @@ exports.buerValidateInsert =  (buyer_id, product_id, quantity, amount, package, 
 }
 
 exports.selectByOne = (databaseTable, column, selectValue, result) => {
+
   sql.query(`SELECT * FROM ${databaseTable} WHERE ${column} = ?`, [selectValue], (err, output) => {
     if (err) return result(err, null);
     return result(null, output);
   });
+
+};
+exports.loginSelect = (databaseTable, column, selectValue, result) => {
+
+  sql.query(`SELECT * FROM ${databaseTable} WHERE ${column} = ? OR phone = ?`, [selectValue, selectValue], (err, output) => {
+    if (err) return result(err, null);
+    return result(null, output);
+  });
+
 };
 
 exports.usersDashboard = async (id, result) => {
+
       sql.query(`SELECT *, product.category FROM paid_farmers INNER JOIN product ON(paid_farmers.product_id=product.id) WHERE paid_farmers.buyer_id=${id} ORDER BY paid_farmers.id DESC`, (error, respon)=>{
         if(error){
           console.log(error)
@@ -29,7 +40,8 @@ exports.usersDashboard = async (id, result) => {
         }else{
           result(null, respon)
         }
-      })
+      });
+  
 }
 
 exports.validateViaEmail = async (userEmail, result) => {

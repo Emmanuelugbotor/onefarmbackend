@@ -14,35 +14,39 @@ const { generateToken } = require("../utils/token");
 var saltRounds = 10;
 let { generatePdf, sendAdminReceipt } = require("../utils/email.controller");
 
-
 // FARMERS SECTIONS
 
 exports.RegisterUser = async (req, res) => {
-  
-  if (Object.entries(req.body).length == 0) return res.status(500).send({ msg: "Provide valid user details" });
-  if(!req.body.password) return res.status(500).send({ msg: "Kindly enter a valid password" });
+  if (Object.entries(req.body).length == 0)
+    return res.status(500).send({ error: "Provide valid user details" });
+  if (!req.body.password)
+    return res.status(500).send({ error: "Kindly enter a valid password" });
   else {
     const password = req.body.password;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
     let userInfo = {
       email: req.body.email,
-      name: req.body.name,
-      phone: req.body.phone,
+      name: req.body.fullname,
+      phone: req.body.number,
       password: encryptedPassword,
-      address: req.body.address // optional field
+      address: req.body.address, // optional field
       // repeat_password: encryptedPassword,
     };
 
-    req.body.name.split(" ").join("");
+    req.body.fullname.split(" ").join("");
     let { error } = Register(req.body);
-    if (error) return res.status(502).send({ error: error.details[0]["message"] });
+    if (error)
+      return (
+        console.log(error),
+        res.status(500).send({ error: error.details[0]["message"] })
+      );
     else {
       await db.selectByOne(
         "farmers",
         "email",
         userInfo.email,
         async (err, result) => {
-          console.log(result)
+          console.log("result", result);
           if (err) {
             res.status(500).send({ error: "Network Error" });
           } else if (!Object.entries(result).length == 0) {
@@ -53,18 +57,18 @@ exports.RegisterUser = async (req, res) => {
                 console.log(err);
                 res.status(500).send({ error: "Network Error, try again" });
               } else {
-                // console.log(result.insertId);
+                console.log(result.insertId);
                 let userRegObj = {
                   id: result.insertId,
                   email: req.body.email,
                   name: req.body.fullname,
-                  phone: req.body.phone,
+                  phone: req.body.number,
                 };
                 res.status(200).send({
                   id: result.insertId,
                   email: req.body.email,
-                  name: req.body.name,
-                  phone: req.body.phone,
+                  name: req.body.fullName,
+                  phone: req.body.number,
                   token: generateToken(userRegObj),
                 });
               }
@@ -79,8 +83,9 @@ exports.RegisterUser = async (req, res) => {
 exports.LoginUser = async (req, res) => {
   let { email, password } = req.body;
 
-  await db.selectByOne("farmers", "email", email, async (err, result) => {
-    if (err) res.status(400).send({ error: "Server Error" });
+  await db.loginSelect("farmers", "email", email, async (err, result) => {
+    if (err)
+      console.log(err), res.status(400).send({ error: "Network Error." });
     else {
       if (result.length > 0) {
         const hash = result[0].password.toString();
@@ -94,11 +99,11 @@ exports.LoginUser = async (req, res) => {
               token: generateToken(result[0]),
             });
           } else {
-            res.status(400).send({ error: "Incorrect email or password" });
+            res.status(400).send({ error: "Incorrect email  or password" });
           }
         });
       } else {
-        res.status(400).send({ error: "Incorrect email or password" });
+        res.status(400).send({ error: "Incorrect email  or password" });
       }
     }
   });
@@ -121,7 +126,7 @@ exports.dashboard = (req, res) => {
       console.log(err);
       res.status(400).send({ error: "Network Error" });
     } else {
-      console.log(product)
+      console.log(product);
       res
         .status(200)
         .send({ product, totalProduct, pendingOrders, deliveredOrders });
@@ -130,9 +135,13 @@ exports.dashboard = (req, res) => {
 };
 
 exports.addProduct = (req, res) => {
-  if (Object.entries(req.body).length == 0) return res.status(500).send({ msg: "Provide valid details" });
 
-  // let {user_id} = req.user;
+  console.log("Req ", req.body)
+  console.log(req.files)
+
+  if (Object.entries(req.body).length == 0)
+    return res.status(500).send({ msg: "Provide valid details" });
+
   let { id } = req.user;
   
 
@@ -166,100 +175,71 @@ exports.addProduct = (req, res) => {
     "coli flower",
     "lettuce",
     "rose flower",
-
-    "TOMATOES",
-    "PEPPER",
-    "CABBAGE",
-    "CARROT",
-    "TATASHE",
-    "ONIONS",
-    "GREEN BELL PEPPER",
-    "LETTUCE",
-    "IRISH POTATATOES",
-    "CAULIFLOWER",
-    "BROCCOLI",
-    "BEETROOTS",
-    "GREEN BEANS",
-    "AVOCADO PEAR",
-    "RED CHILLI",
-    "PARSLEY",
-    "KALE",
-    "CELERY",
-    "CHINESE CABBAGE",
-    "EGGPLANT",
-    "ICEBERG LETTUCE",
-    "CHERRY TOMATOES",
-    "MINT LEAF",
-    "PURPLE CABBAGE", 
-    "LEAK",
-
   ];
 
   let { category, weight, amt, desc, fullbag, halfbag, quaterbag } = req.body;
 
-  if (!productArray.includes(category) || !req.body)  return res.send({msg: "please select a valid category"});
-  if (!imageArray.includes(req.files.img.mimetype))  return res.send({msg: "please select a image file"});
+  if (!productArray.includes(category) || !req.body)
+    return res.status(400).send({ error: "please select a valid category" });
+  if (!imageArray.includes(req.files.img.mimetype))
+    return res.status(400).send({ error: "please select a image file" });
 
-  let tableName = category.split(" ").length > 1 ? category.split(" ").join("_") : category;
+  let tableName =
+    category.split(" ").length > 1 ? category.split(" ").join("_") : category;
   let imagesName = "productsImg/" + req.files.img.name;
-  req.files.img.mv("public/productsImg/" + req.files.img.name);
+  req.files.img.mv("public/productsImg/" + req.files.img.name); 
 
-  sql.query("INSERT INTO product(`farmer_id`, `category`, `desc`, `weight`, `amt`, `imagesName`, `fullbag`, `halfbag`, `quaterbag`) VALUES(?,?,?,?,?,?,?,?,?)",
+  sql.query(
+    "INSERT INTO product(`farmer_id`, `category`, `desc`, `weight`, `amt`, `imagesName`, `fullbag`, `halfbag`, `quaterbag`) VALUES(?,?,?,?,?,?,?,?,?)",
     [id, tableName, desc, weight, amt, imagesName, fullbag, halfbag, quaterbag],
     (error, result) => {
       if (error) {
         console.log(error);
-        return res.send({msg: "Network Error, try again"});
-      } else {  return res.send({msg: "Products uploaded successfully"});
+        return res.status(404).send({ error: "Network Error, try again" });
+      } else {
+        return res.status(200).send({ msg: "Products uploaded successfully" });
       }
     }
   );
+
 };
 
 exports.getProduct = (req, res) => {
-  
   let { id } = req.user;
-  
-  sql.query("SELECT * FROM  product WHERE farmer_id = ?", [id],
+
+  sql.query(
+    "SELECT * FROM  product WHERE farmer_id = ?",
+    [id],
     (error, result) => {
       if (error) {
         console.log(error);
         return res.send({ msg: "Network Error, try again" });
-      } else {  return res.send({result});
+      } else {
+        return res.send({ result });
       }
     }
   );
-
 };
 
 exports.deleteProduct = (req, res) => {
-  
   let { id } = req.user;
-  let product_id  = parseInt(req.params.id)
-  if(isNaN(product_id)  || isNaN(id)) return res.send({msg: "Please enter a valid params"})
-  
-  sql.query("DELETE FROM product WHERE farmer_id = ? AND id = ?", [id, product_id],
+  let product_id = parseInt(req.params.id);
+  if (isNaN(product_id) || isNaN(id))
+    return res.send({ msg: "Please enter a valid params" });
+
+  sql.query(
+    "DELETE FROM product WHERE farmer_id = ? AND id = ?",
+    [id, product_id],
     (error, result) => {
       if (error) {
         console.log(error);
         return res.send({ msg: "Network Error, try again" });
-      } else {  return res.send({ msg: "Product deleted successfully" });
+      } else {
+        return res.send({ msg: "Product deleted successfully" });
       }
     }
   );
-
 };
-
-
-
-
-
-
-
-
-
-
-
 
 exports.ReadProduct = async (req, res) => {
   let resultObj = {};
@@ -282,8 +262,6 @@ exports.logout = (req, res) => {
   req.session.destroy();
   res.redirect("/");
 };
-
-
 
 exports.usersEditEmail = async (req, res) => {
   console.log(req.body);
@@ -350,14 +328,16 @@ exports.usersEditEmail = async (req, res) => {
   );
 };
 
+
+
 exports.changedetails = async (req, res) => {
   // console.log(req.body);
-  if(Object.entries(req.body).length == 0 || !req.body) return res.send({msg: "Kindly provide a valid detail"})
+  if (Object.entries(req.body).length == 0 || !req.body)
+    return res.send({ msg: "Kindly provide a valid detail" });
   let { name, phone, email, address } = req.body;
   let { id } = req.user;
 
   let auth = {
-
     id: id,
     email: email,
     name: name,
@@ -365,7 +345,10 @@ exports.changedetails = async (req, res) => {
     address: address,
   };
 
-  sql.query(`UPDATE farmers SET ? WHERE id=?`, [req.body, id], (err, result) => {
+  sql.query(
+    `UPDATE farmers SET ? WHERE id=?`,
+    [req.body, id],
+    (err, result) => {
       if (err) {
         console.log(err);
         return res.status(400).send({ error: "Network error, try again." });
@@ -494,8 +477,6 @@ exports.resetPass = async (req, res) => {
   );
 };
 
-
-
 exports.buyerCheckout = async (req, res) => {
   console.log("FLW REPONSE FROMT THE REACT SIDE", req.body);
   let { email, name } = req.user;
@@ -580,12 +561,9 @@ exports.buyerCheckout = async (req, res) => {
             }
           );
 
-          return res
-            .status(200)
-            .send({
-              msg:
-                "Your payment was successful and you will be contacted within 24 hrs",
-            });
+          return res.status(200).send({
+            msg: "Your payment was successful and you will be contacted within 24 hrs",
+          });
         } else {
           await db.buerValidateInsert(
             buyerID,
@@ -601,7 +579,6 @@ exports.buyerCheckout = async (req, res) => {
                 console.log(err);
                 return res.status(404).send({ error: "Network Error" });
               } else {
-                
                 await sendAdminReceipt(
                   "info@onefarmtech.com",
                   name,
@@ -618,15 +595,14 @@ exports.buyerCheckout = async (req, res) => {
                   name,
                   cartOrderObj,
                   async (errsPP, resPP) => {
-                    if (errsPP) {console.log(errsPP)
+                    if (errsPP) {
+                      console.log(errsPP);
                     }
                   }
                 );
                 return res.status(200).send({
-                  msg:
-                    "Your payment was successful and you will be contacted within 24 hrs",
+                  msg: "Your payment was successful and you will be contacted within 24 hrs",
                 });
-
               }
             }
           );
@@ -653,8 +629,7 @@ exports.buyerCheckout = async (req, res) => {
             });
           } else {
             return res.status(200).send({
-              msg:
-                "We encoutered error with your card but you will be contacted within 24 hrs",
+              msg: "We encoutered error with your card but you will be contacted within 24 hrs",
             });
           }
         }
@@ -662,8 +637,6 @@ exports.buyerCheckout = async (req, res) => {
     }
   });
 };
-
-
 
 exports.mining = async (req, res) => {
   let userDataInput;
